@@ -28,20 +28,12 @@ function searchPort(ports) {
     portNumeric = parseInt(portValue);
     console.log(portValue);
     console.log(ports[portValue]);
-    if (!Number.isInteger(portNumeric) || portNumeric < 0 || portNumeric > 100000) {
-        console.log("invalid");
+    if (!Number.isInteger(portNumeric) || portNumeric < 0 || portNumeric > 65535) {
         showResult('danger', `<strong>${portValue}</strong> is not valid TCP/UDP port`);
-        return;
-    }
-
-    if (!ports[portValue]) {
-        console.log("Not used");
+    } else if (!ports[portValue]) {
         showResult('success',
             `<strong>All clear!</strong> It looks like nobody is using port <strong>${portValue}</strong>...yet`);
-        return;
-    }
-
-    if (ports[portValue].length > 1) {
+    } else if (ports[portValue].length > 1) {
         let msg = `Port <strong>${portValue}</strong> is:<ul>`;
         for (let port of ports[portValue]) {
             const type = [
@@ -55,7 +47,6 @@ function searchPort(ports) {
 
         msg += `</ul>`;
         showResult('warning', msg);
-
     } else {
         const p = ports[portValue][0];
         const type = [(p.tcp) ? '<strong>TCP</strong>' : null, (p.udp) ? '<strong>UDP</strong>' : null].filter(
@@ -66,13 +57,11 @@ function searchPort(ports) {
     }
 
     if ($('#results').children().length > 10) {
-        console.log('removing...');
         $("#results div:last-child").remove()
     }
 }
 
 $(function () {
-    console.log("let's go");
     const ports = getPorts().then(ports => {
         $('.form-control').on('keypress', function (e) {
             if (e.which == '13') {
